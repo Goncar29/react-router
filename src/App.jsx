@@ -1,14 +1,13 @@
 import { useState } from 'react'
 import './App.css'
 import { useEffect } from 'react'
-
-const NAVIGATION_EVENT = 'pushstate'
+import { EVENTS } from './const'
 
 function navigate (href) {
 // history para cambiar la url sin recargar la pagina, solo reflejar el cambio en la url
     window.history.pushState({}, '', href)
 // creamos un evento personalizado
-    const navigationEvent = new Event(NAVIGATION_EVENT) 
+    const navigationEvent = new Event(EVENTS.PUSHSTATE) 
     window.dispatchEvent(navigationEvent) // enviamos el evento
 }
 
@@ -45,10 +44,13 @@ function App() {
         const onLocationChange = () => {
             setCurrentPath(window.location.pathname)
         }
-        window.addEventListener(NAVIGATION_EVENT, onLocationChange)
-        // despues limpiamos el evento
-        return () => {
-            window.removeEventListener(NAVIGATION_EVENT, onLocationChange)
+
+        window.addEventListener(EVENTS.PUSHSTATE, onLocationChange)
+        window.addEventListener(EVENTS.POPSTATE, onLocationChange) // evento cuando vamos para atras
+        
+        return () => {  // despues limpiamos el evento
+            window.removeEventListener(EVENTS.PUSHSTATE, onLocationChange)
+            window.removeEventListener(EVENTS.POPSTATE, onLocationChange)
         }
     }, [])
 
