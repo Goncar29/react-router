@@ -1,4 +1,4 @@
-import { BUTTONS, EVENTS } from './const.jsx'
+import { BUTTONS, EVENTS } from './consts.js'
 
 export function navigate (href) {
     // history para cambiar la url sin recargar la pagina, solo reflejar el cambio en la url
