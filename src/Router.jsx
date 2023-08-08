@@ -1,18 +1,18 @@
 import { EVENTS } from './consts'
 import { useState, useEffect, Children } from 'react'
 import { match } from 'path-to-regexp'
-
+import { getCurrentPath } from './utils.js'
 
 export function Router ({ children, routes = [], defaultComponent: DefaultComponent = () => <h1>404</h1> }) {
     console.log(children);
     
-    const [currentPath, setCurrentPath] = useState(window.location.pathname)
+    const [currentPath, setCurrentPath] = useState(getCurrentPath())
 
     // suscripcion al evento pushstate
     useEffect(() => {
 // esto se ejecuta cada vez que hay un cambio en la navegacion y lo hace al escuchar el evento
         const onLocationChange = () => {
-            setCurrentPath(window.location.pathname)
+            setCurrentPath(getCurrentPath())
         }
 
         window.addEventListener(EVENTS.PUSHSTATE, onLocationChange)
@@ -35,7 +35,7 @@ export function Router ({ children, routes = [], defaultComponent: DefaultCompon
     })
     console.log(routesFromChildren);
 
-    const routesToUse = routes.concat(routesFromChildren)
+    const routesToUse = routes.concat(routesFromChildren).filter(Boolean)
 
     const Page = routesToUse.find(({ path }) => {
         if (path === currentPath) return true
