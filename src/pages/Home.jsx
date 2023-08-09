@@ -5,7 +5,7 @@ export default function HomePage(){
         <>
             <h1>Home</h1>
             <p>Esta es una pagina de ejemplo para crear un React Router</p>
-            <Link to='/about'>IR a sobre nosotros</Link>
+            <Link to='/about'>Ir a sobre nosotros</Link>
         </>
     )
 }

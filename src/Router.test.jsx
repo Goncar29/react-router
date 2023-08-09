@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { Router } from './Router'
+import { Route } from './pages/Route'
+import { Link } from './Link'
 import { getCurrentPath } from './utils.js'
 
 
@@ -14,7 +16,7 @@ vi.mock('./utils.js', () => ({
 
 describe('Router', () => {
     beforeEach(() => {
-        cleanup() //este metodo va a limpiar la pantalla
+        cleanup() //este metodo va a limpiar la pantalla y evitamos el doble renderizado del screen
         vi.clearAllMocks() //limpiamos todos los mocks
     })
 
@@ -46,5 +48,33 @@ describe('Router', () => {
         render(<Router routes={routes} />)
         expect(screen.getByText('About')).toBeTruthy()
         //si en el screen contiene el texto about nos dara un ok
+    })
+
+    it('should navigate using links', async () => {
+        getCurrentPath.mockReturnValueOnce('/')
+
+        render(
+            <Router>
+                <Route path='/' Component={() => {
+                    return (
+                        <>
+                            <h1>Home</h1>
+                            <Link to='/about'>Go to About</Link>
+                        </>
+                    )
+                }} />
+                <Route path='/about' Component={() => <h1>About</h1>} />
+            </Router>
+        )
+        // Click on the link
+        const anchor = screen.getByText(/Go to About/)
+        fireEvent.click(anchor)
+
+        const aboutTitle = await screen.findByText('About')
+
+        console.log(screen.debug());
+
+        // Check that the new route is rendered
+        expect(aboutTitle).toBeTruthy
     })
 })
